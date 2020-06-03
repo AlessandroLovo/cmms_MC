@@ -35,30 +35,36 @@
     \begin{itemize}
       \item \emph{free}, where the system is surrounded by a layer of spins with value fixed to $0$
       \item \emph{fixed}, where the system is surrounded by a layer of spins with value fixed to $+1$ or $-1$
-      \item \emph{periodic}, where the system is surrounded by a layer of spins that 'mirrors' the system's surface as if the system was periodically replicated.
+      \item \emph{periodic}, where the system is surrounded by a layer of spins that 'mirrors' the opposite surface as if the system was periodically replicated.
     \end{itemize}
     The most used one will be the periodic boundary condition, but the other two will be interesting when investigating size dependent properties
 
     At this point, if the system has $N$ spins, one can define some useful quantities to be monitored during the simulations:
     \begin{itemize}
       \item average magnetization $m = \frac{1}{N} \sum_i S_i$
-      \item average degree of alignment $a = \frac{1}{zN} \sum_i \sum_{j \, n.n. \, i} S_i S_j$ that if $h = 0$ is equal to $\frac{E}{kNz}$
+      \item average degree of alignment $a = \frac{1}{zN} \sum_i \sum_{j \, n.n. \, i} S_i S_j$ that if $h = 0$ is equal to $-\frac{E}{kNz} = -\frac{2H}{J}$
       % \item density of domain walls $n_{DW} = \frac{N_{DW}}{N} = \frac{N - N_{sat}}{N}$ where $N_{sat}$ is the number of \emph{saturated} spins, i.e. spins that have the same value of all their nearest neighbors
-      \item magnetic susceptibility $\chi_m = \frac{1}{NT} \text{Var}(Nm) \propto Nk\text{Var}(m)$
     \end{itemize}
 
-    The advantage of using this quantities is that $m,a \in [-1,1]$ independently on the parameters of the system $N,D,k,h$ making them suitable to be studied on a wide range of those parameters.
+    By combining the results of different simulations one can then compute the two response functions:
+    \begin{itemize}
+      \item specific heat at constant external field $\frac{1}{N} \frac{\partial H}{\partial T} \propto -\frac{\partial a}{\partial \frac[f]{1}{k}} =: c_B$
+      \item magnetic susceptibility $\frac{1}{Nk_BT} \text{Var}(N|m|) \propto Nk\text{Var}(|m|) =: \chi_m'$ or $\frac{\partial N|m|}{\partial T} \propto -N\frac{\partial |m|}{\partial \frac[f]{1}{k}} =: \chi_m$ \footnote{In theory the magnetic susceptibility should be defined in terms of $m$ and not $|m|$, but for finite size systems the latter works better (see \cite{rif:eye-opener} pag 15)}.
+    \end{itemize}    
+
+    % The advantage of using this quantities is that $m,a \in [-1,1]$ independently on the parameters of the system $N,D,k,h$ making them suitable to be studied on a wide range of those parameters.
 
   \subsection{Montecarlo evolution of the system}
-    After deciding an initial configuration of the system, at each MC step one attempts to make a \emph{move} and the computes the variation of the reduced energy $\Delta E$. If $\Delta E < 0$ the move is accepded. Otherwise a random number $r \in [0,1)$ is extracted and if $r < e^{-\Delta E}$ the move is accepted as well. If the move is rejected the system stays in its original configuration.
+    After deciding an initial configuration of the system, at each MC step one attempts to make a \emph{move} and then computes the variation of the reduced energy $\Delta E$. If $\Delta E < 0$ the move is accepded. Otherwise a random number $r \in [0,1)$ is extracted and if $r < e^{-\Delta E}$ the move is accepted as well. If the move is rejected the system stays in its original configuration.
     One has now to decide a proper move, and in principle one could say 'pick $n$ spins and flip them' where 'pick' can be done by choosing them randomly or by cycling with some order amongst all spins.
 
     After a large enough number of MC steps the system should reach equilibrium and at this point one can collect meanigful data to analyze.
 
 
   \section{Choice of the simulation parameters}
+    Henceforth, if not otherwise specified, simulations will be run with periodic boundary condition and $h = 0$. \\
     To obtain meanigful results in a reasonable amount of time it is necessary to optimize the simulation parameters. In this section a 2-dimensional Ising model with $128 \times 128$ (this way it is easy to visualize the system as a black and white picture) spins will be used to test the effect of the various simulation parameters.
-    Also for now the periodic boundary condition will be used and $h = 0$ as well.
+
 
     \subsection{How to 'pick' spins}
       Suppose for now that $n = 1$, i.e. at each step one flips a single spin. In order to see what is the difference between randomly picking a spin versus cycling them one can initialize the system with random noise and then do $10^7$ MC steps with a very high value of the coupling constant between spins $k = 8$. This way one expects the system to reach a ferromagnetic equilibrium state.
@@ -75,7 +81,7 @@
       In order to avoid correlation in the spins, a nice way of cycling is to randomly permute the sequence of indices of the spins $\{i\}_{i=1}^N$ and then pick them following the permuted sequence $\{i_j\}_{j=1}^N$.
 
     \subsection{How many spins to pick}
-      First of all one should notice that picking together $n > 1$ spins is incompatible with the cycling technique as the $n$-uples of spins will periodically repeat somehow partitioning the system in groups. And actually in this case the system does not evolve at all.
+      First of all one should notice that picking together $n > 1$ spins is incompatible with the cycling technique as the $n$-uples of spins will periodically repeat somehow partitioning the system in groups. And actually in this case the system does not evolve at all (fig \ref{fig:fin_nb}).
       On the other hand with random picking the correlation introduced is much lower and the system is still able to evolve although slower (fig \ref{fig:fin_nc}, \ref{fig:fin_nd}).
 
       \begin{figure}
@@ -152,7 +158,7 @@
       Since the idea is to simulate at different values of $k$ and hopefully see a phase transition it is useful to make some rough estimations in order to look in the correct range of $k$s.\\
       If one considers the perfectly ferromagnetic configuration in which all the spins are aligned the probability of one of them flipping is $p_1 = e^{-\Delta E} = e^{-4kz}$.
       On the other hand the flipping probability of a spin next to an already fliped spin is $p_2 = e^{-\Delta E} = e^{-4k(z-2)}$.
-      So, if one calls $N_{s}$ the number of spins not aligned with all the rest (henceforth 'seed' spins) and if $N_{s} \ll N$ one can write the following differential equation noting that if a seed spin is picked, it flips with probability 1.
+      So, if one calls $N_{s}$ the number of spins not aligned with all the rest (henceforth 'seed' spins) and if $N_{s} \ll N$ one can write the following differential equation noting that if a seed spin is picked, it flips back with probability 1.
 
       \begin{equation}
         \frac{\partial N_{s}}{\partial t} = p_1\frac{N - N_{s}}{N}  + p_2 \frac{zN_s}{N}- \frac{N_{s}}{N} = p_1 - \frac{1}{N}(1 + p_1 - zp_2) N_s
@@ -189,13 +195,13 @@
 
 
     \subsection{Sampling rate, block averaging and lenght of the simulation}
-      Since at each time step only a single spin has the opportunity to flip, a reasonable a reasonable sampling rate is taking a snapshot of the system every $\tau_s \approx 10N$ steps: this way two subsequent snapshots should not be too much correlated. To further reduce this correlation and then be able to compute the error on the average properties of the system as the error of the arithmetic mean, one can proceed with the \emph{block averaging} technique, namely subdivide the set of sampled properties $\{f_i\}_{i=1}^n$ in $M$-uples of consecutive points and create a new dataset $\{f_j\}_{j=1}^{\frac[f]{n}{M}}$ made of the arithmetic mean of each $M$-ulpe.
+      Since at each time step only a single spin has the opportunity to flip, a reasonable sampling rate is taking a snapshot of the system every $\tau_s \approx 10N$ steps: this way two subsequent snapshots should not be too much correlated. To further reduce this correlation and then be able to compute the error on the average properties of the system as the error of the arithmetic mean, one can proceed with the \emph{block averaging} technique, namely subdivide the set of sampled properties $\{f_i\}_{i=1}^n$ in $M$-uples of consecutive points and create a new dataset $\{f_j\}_{j=1}^{\frac[f]{n}{M}}$ made of the arithmetic mean of each $M$-ulpe.
       By monitoring how the standard deviation of the mean of the mean $\sigma(f) = \sqrt{\frac{\text{Var}\left( \{f_j\}_{j=1}^{\frac[f]{n}{M}} \right)}{\frac[f]{n}{M}}}$ varies with $M$ one finds that a proper value for the block averaging parameter is around $M = 100$ (fig \ref{fig:block_averaging}).
-      Actually since with $\tau_s = 10N$ consecutive snapshots are still a lot correlated, rather than using $M = 100$ it is more computationally efficient to do $\tau_s = 50N$ and $M = 20$.
+      Actually since with $\tau_s = 10N$, consecutive snapshots are still a lot correlated, rather than using $M = 100$ it is more computationally efficient to do $\tau_s = 50N$ and $M = 20$.
 
-      Also the magnetic susceptibility can be estimated as $\chi_m = Nk\sigma(m)^2$.
+      % Also the magnetic susceptibility can be estimated as $\chi_m = Nk\sigma(m)^2$.
 
-      At this point after the block averaging process points are spaced by $1000 N$ steps and in order to compute a meaningful average on these points one shold have at least around 20 of them, meaning that the simulation should last at least $2\cdot10^4 N$ timesteps.
+      At this point, after the block averaging process, points are spaced by $1000 N$ steps and in order to compute a meaningful average on these points one should have at least around 20 of them, meaning that the simulation should last at least $2\cdot10^4 N$ timesteps.
       Since this numbers start to be quite big, to speed up the computations a $64\times64$ system will now be used.
 
       \begin{figure}[H]
@@ -207,7 +213,7 @@
 
 
     \subsection{Equilibration and initialization of the system}
-      The equilibrium is reached in the first part of the simulation (equilibration), that should not be used for computing averages. In order to make this part as short as possible it is important to properly initialize the system (fig \ref{fig:equilibration}). One can notice that (unsurprisingly) a random noise configuration takes a while to reach the ferromagnetic equilibrium state, but on the other hand a ferromagnetic starting configuration reache a paramagnetic equilibrium quite quickly.
+      The equilibrium is reached in the first part of the simulation (equilibration), that should not be used for computing averages. In order to make this part as short as possible it is important to properly initialize the system (fig \ref{fig:equilibration}). One can notice that (unsurprisingly) a random noise configuration takes a while to reach the ferromagnetic equilibrium state, but on the other hand a ferromagnetic starting configuration reaches a paramagnetic equilibrium quite quickly.
       For this reason on can initialize the system with a ferromagnetic state and discard as equilibration the first two points after the block averaging process.
 
       \begin{figure}[H]
@@ -219,9 +225,10 @@
       \end{figure}
 
 
+
   \section{Results of the simulations}
     \subsection{$D = 1$}
-      The one dimensional case is quite a tricky one: since one does not expect a phase transition the range of $k$ points is somewhat arbitrary. Here $[0.5,8]$ is used. Also for this large value of $k$, $p_1 \ll 1$ meaning that the probability of creating the first seed spin is almost negligible; but on the other hand $p_2 = 1$, and so as soon as there is one seed a wave of flipping spins will travel across the system, giving to the magnetization an 'instanton-like' behavior fig \ref{fig:instanton}. On the other hand if $k$ is big enough $p_1$ is so small that the system is stuck in the initial ferromagnetic configuration and so it doesn't evolve at all.
+      The one dimensional case is quite a tricky one: since one does not expect a phase transition the range of $k$ points is somewhat arbitrary. Here $[0.5,8]$ is used. For this large values of $k$, $p_1 \ll 1$, meaning that the probability of creating the first seed spin is almost negligible; but on the other hand $p_2 = 1$, and so as soon as there is one seed a wave of flipping spins will travel across the system, giving to the magnetization an 'instanton-like' behavior fig \ref{fig:instanton}. On the other hand if $k$ is big enough $p_1$ is so small that the system is stuck in the initial ferromagnetic configuration and so it doesn't evolve at all.
 
       \begin{figure}[H]
         \centering
@@ -231,7 +238,7 @@
         \label{fig:instanton}
       \end{figure}
 
-      To try to avoiding this one can istead start from the paramagnetic configuration (random noise) and use the random picking of spins. With this settings and trying for different sizes of the system one gets the results in fig \ref{fig:D1_size_dependent}, where it is clear that as the size of the system increases the ferromagnetic state becomes more and more unstable, suggesting that in the thermodynamic limit there is, as expected, no phase transition at all.
+      To try to avoid this, one can istead start from the paramagnetic configuration (random noise) and use the random picking of spins. With this settings and trying for different sizes of the system one gets the results in fig \ref{fig:D1_size_dependent}, where it is clear that as the size of the system increases the ferromagnetic state becomes more and more unstable, suggesting that in the thermodynamic limit there is, as expected, no phase transition at all.
 
       \begin{figure}[H]
         \centering
@@ -248,7 +255,7 @@
 
       By running the simulations at different sizes of the system one finds that the magnetization does exhibit a phase transition and moreover as $N$ increases the transition becomes sharper (fig \ref{fig:D2_size_dependent}), as expected since the system is getting closer to the thermodynamic limit.\\
       It is interesting here to try different boundary conditions: periodic (PBC) and free (FBC).
-      If one plots the behavior of $a$ and $\chi_m$ (fig \ref{fig:D2_achi}) one finds that $a$ is almost unaffected by the size of the system with PBC while the free boundary data tend to the periodic ones as the size of the system increases. A similar behavior can be seen in the magnetic susceptibility, where basically the FBC exaggerates the effect of size.
+      If one plots the behavior of $a$ and $\chi_m' = Nk\sigma(|m|)$ (fig \ref{fig:D2_achi}) one finds that $a$ is almost unaffected by the size of the system with PBC while the free boundary data tend to the periodic ones as the size of the system increases. A similar behavior can be seen in the magnetic susceptibility, where basically the FBC exaggerates the effect of size.
 
     \begin{figure}[H]
       \centering
@@ -262,12 +269,12 @@
     \begin{figure}[H]
       \centering
       \resizebox{0.45\textwidth}{!}{\import{img/}{D2_a_free.pgf}}
-      \resizebox{0.45\textwidth}{!}{\import{img/}{D2_chi_free.pgf}}
+      \resizebox{0.45\textwidth}{!}{\import{img/}{D2_chi_a.pgf}}
       \caption{Behavior of the average alignment and the of the magnetic susceptibility as a function of $k$ with different boundary conditions: solid line \emph{periodic}, dashed \emph{free}.}
       \label{fig:D2_achi}
     \end{figure}
 
-    The magnetic susceptibility $\chi_m$ exhibits a peak whose maximum can be used to find the critical value of $k$ with error given by half of the full width half maximum of the peak.
+    The magnetic susceptibility $\chi_m'$ exhibits a peak whose maximum can be used to find the critical value of $k$ with error given by half of the full width half maximum of the peak (fig \ref{fig:D2_k_c}).
 
     \paragraph{Critical exponents}
     Another way of studying the phase transition is to fit the behavior of the thermodynamic properties of the system near the critical point finding some of its critical exponents.
@@ -276,11 +283,11 @@
     \begin{equation}
       m(k;A,\beta,k_c) = \begin{cases}
         0 & k < k_c \\
-        A \left(\frac{1}{k_c} - \frac{1}{k} \right)^\beta & k > k_c
+        \pm A \left(\frac{1}{k_c} - \frac{1}{k} \right)^\beta & k > k_c
       \end{cases}
     \end{equation}
 
-    It is important here to notice that the data used for the fit should be the absolute value of the average magnetization, and not the average of the absolute value of the magnetization (fig \ref{fig:D2_beta}).
+    To simplify the fit one can take the absolute value of the magnetization, but it is important here to notice that the data used for the fit should be the absolute value of the average magnetization, and not the average of the absolute value of the magnetization (fig \ref{fig:D2_beta}).
 
     The way the magnetic susceptibility diverges at the critical point is instead controlled by the following:
 
@@ -291,9 +298,12 @@
       \end{cases}
     \end{equation}
 
-    where in the thermodynamic limit the exponents $\gamma_1$ and $\gamma_2$ are equal. This fit of the magnetic susceptibility is quite tricky because since $\chi_m$ is estimated as the error on $m$, there is no simple way to estimate the error on $\chi_m$ (the 18 points on which the average magnetization is computed are too few for estimating the error on its dispersion). So, in order to be able to do the fit a fake artificial error has been used: $\sigma(\chi_m) = s\sqrt(\chi_m)$. Then the value of $s$ has been tuned in order to have a reasonable value of the reduced $\chi^2$ finding $s = 0.03$. Also, in order to obtain a better fit, the points too near to the critical point ($|k  k_c| < 0.002$) are ignored (fig \ref{fig:D2_gamma}).
+    where in the thermodynamic limit the exponents $\gamma_1$ and $\gamma_2$ are equal.
+    For this fit (fig \ref{fig:D2_gamma}) it is better to use the differential definition of the magnetic susceptibility $\chi_m$, because there is no good way of estimating the error on $\chi_m'$. Furthermore $\chi_m'$ is computed as a variance on 18 'measures' of $|m|$: enough to qualitatively display the peaks in fig \ref{fig:D2_achi} but too few for a fit.
 
-    For exponent $\alpha$ one needs the specific heat at constant $B$, $c_B = \frac{1}{N}\frac{\partial H}{\partial T} \propto \frac{\partial a}{\partial \frac[f]{1}{k}}$, which is fitted by
+    % This fit of the magnetic susceptibility is quite tricky because since $\chi_m$ is estimated as the error on $m$, there is no simple way to estimate the error on $\chi_m$ (the 18 points on which the average magnetization is computed are too few for estimating the error on its dispersion). So, in order to be able to do the fit a fake artificial error has been used: $\sigma(\chi_m) = s\sqrt(\chi_m)$. Then the value of $s$ has been tuned in order to have a reasonable value of the reduced $\chi^2$ finding $s = 0.03$.
+
+    For exponent $\alpha$ the situation is very similar (fig \ref{fig:D2_alpha}):
 
     \begin{equation}
       c_B(k;A_1,A_2,\alpha_1,\alpha_2,k_c) = \begin{cases}
@@ -302,7 +312,7 @@
       \end{cases}
     \end{equation}
 
-    Here the fit works well without neglecting any points (fig \ref{fig:D2_alpha}).
+    For both $\chi_m'$ and $c_B$ the derivatives are computed as incremental ratios on consecutive simulations
 
     The last critical exponent that can be estimated with quite ease is $\delta$, which controls how the magetization behaves at the critical point with respect to the external field $h$ (fig \ref{fig:D2_delta}).
 
@@ -443,6 +453,7 @@
 
   \begin{thebibliography}{100}
     \bibitem{rif:wiki} Wikipedia \emph{Ising Model} \url{https://en.wikipedia.org/wiki/Ising_model}
+    \bibitem{rif:eye-opener} Jacques Kotze \emph{Introduction to Monte Carlo methods for an Ising Model of a Ferromagnet} \url{https://arxiv.org/pdf/0803.0217.pdf}
     \bibitem{rif:fss} \emph{Finite size scaling} \url{http://physics.bu.edu/~py502/slides/l17.pdf}
     \bibitem{rif:fss_1} \emph{Phase transitions and finite size scaling} \url{https://www.mv.helsinki.fi/home/rummukai/simu/fss.pdf}
     \bibitem{rif:unimi} \emph{Monte Carlo simulation of the Ising model} \url{http://phd.fisica.unimi.it/assets/Comp_Phys-esercizio3-1.pdf}
