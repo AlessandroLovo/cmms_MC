@@ -12,7 +12,7 @@
 
 
 \section{Introduction}
-  The aim of this report is to use Montecarlo (MC) simulations to study the paramagnetic-ferromagnetic phase transition of an Ising model as a function dimension $D$ and of the size of the system. Some ways of optimizing the simulations will also be discussed.
+  The aim of this report is to use Montecarlo (MC) simulations to study the paramagnetic-ferromagnetic phase transition of an Ising model as a function of dimension $D$ and of the size of the system. Some ways of optimizing the simulations will also be discussed.
 
   \subsection{Setting up the model}
     An Ising model is a description of a magnetic system via a set of \emph{spins} interacting with each other.
@@ -37,19 +37,19 @@
       \item \emph{fixed}, where the system is surrounded by a layer of spins with value fixed to $+1$ or $-1$
       \item \emph{periodic}, where the system is surrounded by a layer of spins that 'mirrors' the opposite surface as if the system was periodically replicated.
     \end{itemize}
-    The most used one will be the periodic boundary condition, but the other two will be interesting when investigating size dependent properties
+    The most used one will be the periodic boundary condition, but the others will be interesting when investigating size dependent properties.
 
     At this point, if the system has $N$ spins, one can define some useful quantities to be monitored during the simulations:
     \begin{itemize}
-      \item magnetization per spin $m = \frac{1}{N} \sum_i S_i$
-      \item degree of alignment per spin $a = \frac{1}{zN} \sum_i \sum_{j \, n.n. \, i} S_i S_j$ that if $h = 0$ is equal to $-\frac{E}{kNz} = -\frac{2H}{J}$
+      \item magnetization per spin $m = \frac{1}{N} \sum_i S_i \in [-1, 1]$
+      \item degree of alignment per spin $a = \frac{1}{zN} \sum_i \sum_{j \, n.n. \, i} S_i S_j \in [-1, 1]$ that if $h = 0$ is equal to $-\frac{E}{kNz} = -\frac{2H}{J}$
       % \item density of domain walls $n_{DW} = \frac{N_{DW}}{N} = \frac{N - N_{sat}}{N}$ where $N_{sat}$ is the number of \emph{saturated} spins, i.e. spins that have the same value of all their nearest neighbors
     \end{itemize}
 
     By combining the results of different simulations one can then compute the two response functions:
     \begin{itemize}
       \item specific heat at constant external field $\frac{1}{N} \frac{\partial \langle H \rangle }{\partial T} \propto -\frac{\partial \langle a \rangle }{\partial \frac[f]{1}{k}} =: c_B$
-      \item magnetic susceptibility $\frac{1}{Nk_BT} \text{Var}(N|m|) \propto Nk\text{Var}(|m|) =: \chi_m'$ or $\frac{\partial N \langle |m| \rangle }{\partial T} \propto -N\frac{\partial \langle |m| \rangle }{\partial \frac[f]{1}{k}} =: \chi_m$ \footnote{In theory the magnetic susceptibility should be defined in terms of $m$ and not $|m|$, but for finite size systems the latter works better (see \cite{rif:eye-opener} pag 15)}.
+      \item magnetic susceptibility $\frac{1}{Nk_BT} \text{Var}(N|m|) \propto Nk(\langle m^2 \rangle - \langle |m| \rangle^2 ) =: \chi_m'$ or $\frac{\partial N \langle |m| \rangle }{\partial T} \propto -N\frac{\partial \langle |m| \rangle }{\partial \frac[f]{1}{k}} =: \chi_m$ \footnote{In theory the magnetic susceptibility should be defined in terms of $m$ and not $|m|$, but for finite size systems the latter works better (see \cite{rif:eye-opener} pag 15).}
     \end{itemize}
 
     % The advantage of using this quantities is that $m,a \in [-1,1]$ independently on the parameters of the system $N,D,k,h$ making them suitable to be studied on a wide range of those parameters.
@@ -73,7 +73,7 @@
         \centering
         \resizebox{0.45\textwidth}{!}{\import{img/}{m_k16_random.pgf}} \quad
         \resizebox{0.45\textwidth}{!}{\import{img/}{m_k16_permutate_c1.pgf}}
-        \caption{Behavior of the magnetization of the system $m$ along 5 trials. The first is in the case of random picking, the second cycling. One of the final configuration for each type of picking is reported in fig \ref{fig:fin_na}, \ref{fig:fin_nc}.}
+        \caption{Behavior of the magnetization of the system along 5 trials. The first is in the case of random picking, the second cycling. One of the final configurations for each type of picking is reported in fig \ref{fig:fin_na}, \ref{fig:fin_nc}.}
         \label{fig:pick_m}
       \end{figure}
 
@@ -82,7 +82,7 @@
 
     \subsection{How many spins to pick}
       First of all one should notice that picking together $n > 1$ spins is incompatible with the cycling technique as the $n$-uples of spins will periodically repeat somehow partitioning the system in groups. And actually in this case the system does not evolve at all (fig \ref{fig:fin_nb}).
-      On the other hand with random picking the correlation introduced is much lower and the system is still able to evolve although slower (fig \ref{fig:fin_nc}, \ref{fig:fin_nd}).
+      On the other hand with random picking the correlation introduced is much lower and the system is still able to evolve although slower (fig \ref{fig:fin_nc}, \ref{fig:fin_nd}). For this reason it is better to use $n = 1$.
 
       \begin{figure}
         \centering
@@ -105,7 +105,7 @@
         \caption{Final configuration after $10^7$ steps starting from random noise done for $n = 1$, cycling (a); $n = 2$, cycling (b); $n = 1$, random (c) and $n = 2$, random (d).}
       \end{figure}
 
-      For this reason it is better to use $n = 1$.
+
 
       % \subsection{Reasonable values for $k$}
       %   Since the idea is to simulate at different values of $k$ and hopefully see a phase transition it is useful to make some rough estimations in order to look in the correct range of $k$s.\\
@@ -172,7 +172,6 @@
 
       Now $1 + p_1 - zp_2$ can be smaller than 0 yielding an exponential increase of the number of seeds and thus the transition to the paramagnetic state. The condition for the transition $1 + p_1 - zp_2 < 0$ can be recasted as $ze^{8k} > e^{4zk} + 1$ and then solved graphically finding the lower threshold values of $k_l$ in tab \ref{tab:k_crit_th}.
       It is interesting to notice that in $D = 1$, $p_2 = 1$ and thus $1 + p_1 - zp_2 < 0 \, \forall k > 0$, meaning that the ferromagnetic state is always unstable, i.e. there is no phase transition, in agreement with statistical mechanics predictions. Moreover Onsanger's exact solution of the 2-dimensional Ising model predicts $k_{c}^{exact} = \frac{\ln(1 + \sqrt{2})}{4} \approx 0.22$. which is not very far from the value predicted by this very rough reasoning ($k_l = 0.17$).
-
       On the other hand if $1 + p_1 - zp_2 > 0$, $N_s(t) \xrightarrow[t \to \infty]{} \frac{p_1N}{1 + p_1 - zp_2} \approx \frac{p_1N}{1 - zp_2}$.
       If one sets a threshold $\frac{N_s(\infty)}{N} < 0.1\%$ one can graphically find the upper threshold values $k_u$ in tab \ref{tab:k_crit_th}.
 
@@ -191,13 +190,13 @@
         \label{tab:k_crit_th}
       \end{table}
 
-      Apart from the 1D case in which no phase transition is expected, for higher dimension sudying the system in the range $[k_l,k_u]$ should be enough to visualize the phase transition. However, since these threshold values come from a pretty rough model, it is more conservative to use instead $[0.75k_l,1.25k_u]$.
+      Apart from the 1D case in which no phase transition is expected, for higher dimensions sudying the system in the range $[k_l,k_u]$ should be enough to visualize the phase transition. However, since these threshold values come from a pretty rough model, it is more conservative to use instead $[0.75k_l,1.25k_u]$.
 
 
     \subsection{Sampling rate, block averaging and lenght of the simulation}
       Since at each time step only a single spin has the opportunity to flip, a reasonable sampling rate is taking a snapshot of the system every $\tau_s \approx 10N$ steps: this way two subsequent snapshots should not be too much correlated. To further reduce this correlation and then be able to compute the error on the average properties of the system as the error of the arithmetic mean, one can proceed with the \emph{block averaging} technique, namely subdivide the set of sampled properties $\{f_i\}_{i=1}^n$ in $M$-uples of consecutive points and create a new dataset $\{f_j\}_{j=1}^{\frac[f]{n}{M}}$ made of the arithmetic mean of each $M$-ulpe.
       By monitoring how the standard deviation of the mean of the mean $\sigma(f) = \sqrt{\frac{\text{Var}\left( \{f_j\}_{j=1}^{\frac[f]{n}{M}} \right)}{\frac[f]{n}{M}}}$ varies with $M$ one finds that a proper value for the block averaging parameter is around $M = 100$ (fig \ref{fig:block_averaging}).
-      Actually since with $\tau_s = 10N$, consecutive snapshots are still a lot correlated, rather than using $M = 100$ it is more computationally efficient to do $\tau_s = 50N$ and $M = 20$.
+      Actually since with $\tau_s = 10N$ consecutive snapshots are still a lot correlated, rather than using $M = 100$ it is more computationally efficient to do $\tau_s = 50N$ and $M = 20$.
 
       % Also the magnetic susceptibility can be estimated as $\chi_m = Nk\sigma(m)^2$.
 
@@ -207,7 +206,7 @@
       \begin{figure}[H]
         \centering
         \resizebox{0.5\textwidth}{!}{\import{img/}{block_averaging.pgf}}
-        \caption{Behavior of the standard deviation of the mean magnetization as a function of the block averaging parameter $M$. $10^8$ step simulation run on a $64\times64$ Ising model at $k = 0.2$}
+        \caption{Behavior of the standard deviation of the mean magnetization as a function of the block averaging parameter $M$. $10^8$ step simulation run on a $64\times64$ Ising model at $k = 0.2$.}
         \label{fig:block_averaging}
       \end{figure}
 
@@ -343,7 +342,7 @@
         \caption{Some fits for the estimation of the critical exponents}
       \end{figure}
 
-      If one collects these three estimates of the critical point and plots them together with the estimate of the peak of $\chi_m$ one gets the results in fig \ref{fig:D2_k_c} where it is clear that the various estimates approach the exact value of the critical point as the size of the system increases.
+      If one collects these three estimates of the critical point and plots them together with the estimate of the peak of $\chi_m'$ one gets the results in fig \ref{fig:D2_k_c} where it is clear that the various estimates approach the exact value of the critical point as the size of the system increases.
 
 
     \subsection{Comparison with higher dimensions}
@@ -388,7 +387,7 @@
         \caption{Estimates of the critical exponents as a function of the size and dimension of the system. The dashed lines represent the bulk value.}
       \end{figure}
 
-      From figs \ref{fig:betas}, \ref{fig:deltas} one can see that there is a nice trend of the exponents $\beta$ and $\delta$ toward their bulk values as the size of the system increases. On the other hand exponents $\alpha$ and $\gamma$ exhibit a more chaotic behavior. This can be explained by observing that those exponent imply a divergence in the response functions, but since the fit is performed on data that cannot diverge one can expect the results to be not so accurate.
+      From figs \ref{fig:betas}, \ref{fig:deltas} one can see that there is a nice trend of the exponents $\beta$ and $\delta$ toward their bulk values as the size of the system increases. On the other hand exponents $\alpha$ and $\gamma$ exhibit a more chaotic behavior. This can be explained by observing that those exponents imply a divergence in the response functions, but since the fit is performed on data that cannot diverge one can expect the results to be not so accurate.
 
       \begin{table}
         \centering
@@ -422,7 +421,7 @@
 
 
   \section{Conclusion}
-    After understanding the effect of simulation parameters it has been possible to optimize them and investigate the phase transition of the Ising model in different dimensions; with particular focus on the scaling with the size of the system of the position of the critical point and of some of the critical exponents.
+    After understanding the effect of simulation parameters it has been possible to optimize them and investigate the phase transition of the Ising model in different dimensions, with particular focus on the scaling with the size of the system of the position of the critical point and of some of the critical exponents.
 
 
 
