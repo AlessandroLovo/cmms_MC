@@ -49,7 +49,7 @@
     By combining the results of different simulations one can then compute the two response functions:
     \begin{itemize}
       \item specific heat at constant external field $\frac{1}{N} \frac{\partial \langle H \rangle }{\partial T} \propto -\frac{\partial \langle a \rangle }{\partial \frac[f]{1}{k}} =: c_B$
-      \item magnetic susceptibility $\frac{1}{Nk_BT} \text{Var}(N|m|) \propto Nk(\langle m^2 \rangle - \langle |m| \rangle^2 ) =: \chi_m'$ or $\frac{\partial N \langle |m| \rangle }{\partial T} \propto -N\frac{\partial \langle |m| \rangle }{\partial \frac[f]{1}{k}} =: \chi_m$ \footnote{In theory the magnetic susceptibility should be defined in terms of $m$ and not $|m|$, but for finite size systems the latter works better (see \cite{rif:eye-opener} pag 15).}
+      \item magnetic susceptibility $\frac{\partial N|m|}{\partial H} = \frac{1}{Nk_BT} \text{Var}(N|m|) \propto Nk(\langle m^2 \rangle - \langle |m| \rangle^2 ) =: \chi_m$ \footnote{In theory the magnetic susceptibility should be defined in terms of $m$ and not $|m|$, but for finite size systems the latter works better (see \cite{rif:eye-opener} pag 15).}
     \end{itemize}
 
     % The advantage of using this quantities is that $m,a \in [-1,1]$ independently on the parameters of the system $N,D,k,h$ making them suitable to be studied on a wide range of those parameters.
@@ -254,7 +254,7 @@
 
       By running the simulations at different sizes of the system one finds that the magnetization does exhibit a phase transition and moreover as $N$ increases the transition becomes sharper (fig \ref{fig:D2_size_dependent}), as expected since the system is getting closer to the thermodynamic limit.\\
       It is interesting here to try different boundary conditions: periodic (PBC) and free (FBC).
-      If one plots the behavior of $a$ and $\chi_m' = Nk\sigma(|m|)$ (fig \ref{fig:D2_achi}) one finds that $a$ is almost unaffected by the size of the system with PBC while the free boundary data tend to the periodic ones as the size of the system increases. A similar behavior can be seen in the magnetic susceptibility, where basically the FBC exaggerates the effect of size.
+      If one plots the behavior of $a$ and $\chi_m$ (fig \ref{fig:D2_achi}) one finds that $a$ is almost unaffected by the size of the system with PBC while the free boundary data tend to the periodic ones as the size of the system increases. A similar behavior can be seen in the magnetic susceptibility, where basically the FBC exaggerates the effect of size.
 
       \begin{figure}[H]
         \centering
@@ -265,7 +265,7 @@
         \label{fig:D2_size_dependent}
       \end{figure}
 
-      \begin{figure}[H]
+      \begin{figure}
         \centering
         \resizebox{0.45\textwidth}{!}{\import{img/}{D2_a_free.pgf}}
         \resizebox{0.45\textwidth}{!}{\import{img/}{D2_chi_a.pgf}}
@@ -273,7 +273,7 @@
         \label{fig:D2_achi}
       \end{figure}
 
-      The magnetic susceptibility $\chi_m'$ exhibits a peak whose maximum can be used to find the critical value of $k$ with error given by half of the full width half maximum of the peak (fig \ref{fig:D2_k_c}).
+      The magnetic susceptibility $\chi_m$ exhibits a peak whose maximum can be used to find the critical value of $k$ with error given by half of the full width half maximum of the peak (fig \ref{fig:D2_k_c}).
 
       \paragraph{Critical exponents}
       Another way of studying the phase transition is to fit the behavior of the thermodynamic properties of the system near the critical point finding some of its critical exponents.
@@ -298,11 +298,11 @@
       \end{equation}
 
       where in the thermodynamic limit the exponents $\gamma_1$ and $\gamma_2$ are equal.
-      For this fit (fig \ref{fig:D2_gamma}) it is better to use the differential definition of the magnetic susceptibility $\chi_m$, because there is no good way of estimating the error on $\chi_m'$. Furthermore $\chi_m'$ is computed as a variance on 18 'measures' of $|m|$: enough to qualitatively display the peaks in fig \ref{fig:D2_achi} but too few for a fit.
+      % For this fit (fig \ref{fig:D2_gamma}) it is better to use the differential definition of the magnetic susceptibility $\chi_m$, because there is no good way of estimating the error on $\chi_m'$. Furthermore $\chi_m'$ is computed as a variance on 18 'measures' of $|m|$: enough to qualitatively display the peaks in fig \ref{fig:D2_achi} but too few for a fit.
 
-      % This fit of the magnetic susceptibility is quite tricky because since $\chi_m$ is estimated as the error on $m$, there is no simple way to estimate the error on $\chi_m$ (the 18 points on which the average magnetization is computed are too few for estimating the error on its dispersion). So, in order to be able to do the fit a fake artificial error has been used: $\sigma(\chi_m) = s\sqrt(\chi_m)$. Then the value of $s$ has been tuned in order to have a reasonable value of the reduced $\chi^2$ finding $s = 0.03$.
+      This fit of the magnetic susceptibility is quite tricky because since $\chi_m$ is estimated as the error on $m$, there is no simple way to estimate the error on $\chi_m$ (the 18 points on which the average magnetization is computed are too few for estimating the error on its dispersion). So, in order to be able to do the fit a fake artificial error has been used: $\sigma(\chi_m) = s\chi_m^{\frac[f]{1}{2}}$. Then the value of $s$ has been tuned in order to force $\chi^2/dof = 1$. Also, to obtain a better fit data too near to the critical point ($|k - k_c| < 0.002$) are not considered in the fit.
 
-      For exponent $\alpha$ the situation is very similar (fig \ref{fig:D2_alpha}):
+      For exponent $\alpha$ the fitting function is very similar, but data are much easier to deal with since $c_B$ can be computed as a discrete derivative propagating the error on $\langle a \rangle$ (fig \ref{fig:D2_alpha}):
 
       \begin{equation}
         c_B(k;A_1,A_2,\alpha_1,\alpha_2,k_c) = \begin{cases}
@@ -311,7 +311,7 @@
         \end{cases}
       \end{equation}
 
-      Both for $\chi_m'$ and for $c_B$ the derivatives are computed as incremental ratios on consecutive simulations.
+      % Both for $\chi_m'$ and for $c_B$ the derivatives are computed as incremental ratios on consecutive simulations.
 
       The last critical exponent that can be estimated with quite ease is $\delta$, which controls how the magetization behaves at the critical point with respect to the external field $h$ (fig \ref{fig:D2_delta}).
 
@@ -332,7 +332,7 @@
           \label{fig:D2_beta}}
         \end{subfigure}\\
         \begin{subfigure}[Fit of the magnetic susceptibility: estimation of $\gamma_1$, $\gamma_2$.]{
-          \resizebox{0.47\textwidth}{!}{\import{img/}{D2_N64_gamma_d.pgf}}
+          \resizebox{0.47\textwidth}{!}{\import{img/}{D2_N64_gamma_a.pgf}}
           \label{fig:D2_gamma}}
         \end{subfigure}
         \begin{subfigure}[Fit of the magnetization with respect to $h$ at $k = k_c$: estimation of $\delta$.]{
@@ -342,14 +342,13 @@
         \caption{Some fits for the estimation of the critical exponents}
       \end{figure}
 
-      If one collects these three estimates of the critical point and plots them together with the estimate of the peak of $\chi_m'$ one gets the results in fig \ref{fig:D2_k_c} where it is clear that the various estimates approach the exact value of the critical point as the size of the system increases.
+      If one collects these three estimates of the critical point and plots them together with the estimate of the peak of $\chi_m$ one gets the results in fig \ref{fig:D2_k_c} where it is clear that the various estimates approach the exact value of the critical point as the size of the system increases.
 
 
     \subsection{Comparison with higher dimensions}
-      By repeating the whole process done in $D=2$ (except the study of the free boundary condition) for $D = 3$ and $D = 4$ one can summarize the results in the following plots.
+      By repeating the whole process done in $D=2$ (except the study of the free boundary condition) for $D = 3$ and $D = 4$ one can summarize the results in figs \ref{fig:D2_k_c}-\ref{fig:D4_k_c},\ref{fig:alphas}-\ref{fig:deltas}, tab \ref{tab:exponents}.
 
-
-      \begin{figure}[H]
+      \begin{figure}
         \centering
         \begin{subfigure}[]{
           \resizebox{0.3\textwidth}{!}{\import{img/}{D2_k_c.pgf}}
@@ -366,7 +365,7 @@
         \caption{Comparison of the different estimates of the critical point. The horizontal misalignment is purely to distinguish the points better. In $D > 2$ there is no exact (i.e. analytic result in the thermodynamic limit) estimate of the critical point.}
       \end{figure}
 
-      \begin{figure}[H]
+      \begin{figure}
         \centering
         \begin{subfigure}[Solid $\alpha_1$, dotted $\alpha_2$]{
           \resizebox{0.47\textwidth}{!}{\import{img/}{alphas.pgf}}
@@ -377,7 +376,7 @@
           \label{fig:betas}}
         \end{subfigure} \\
         \begin{subfigure}[Solid $\gamma_1$, dotted $\gamma_2$]{
-          \resizebox{0.47\textwidth}{!}{\import{img/}{gammas_d.pgf}}
+          \resizebox{0.47\textwidth}{!}{\import{img/}{gammas_a.pgf}}
           \label{fig:gammas}}
         \end{subfigure}
         \begin{subfigure}[]{
@@ -387,7 +386,7 @@
         \caption{Estimates of the critical exponents as a function of the size and dimension of the system. The dashed lines represent the bulk value.}
       \end{figure}
 
-      From figs \ref{fig:betas}, \ref{fig:deltas} one can see that there is a nice trend of the exponents $\beta$ and $\delta$ toward their bulk values as the size of the system increases. On the other hand exponents $\alpha$ and $\gamma$ exhibit a more chaotic behavior. This can be explained by observing that those exponents imply a divergence in the response functions, but since the fit is performed on data that cannot diverge one can expect the results to be not so accurate.
+      From figs \ref{fig:betas}, \ref{fig:deltas} one can see that there is a nice trend of the exponents $\beta$ and $\delta$ toward their bulk values as the size of the system increases. On the other hand exponents $\alpha$ and $\gamma$ exhibit a more chaotic behavior. This can be explained by observing that those exponents imply a divergence in the response functions, but since the fit is performed on data that cannot diverge one can expect the results to be not so accurate. Furtermore after all the artificial manipulation done to to obtain a fit of the magnetic susceptibility it is not a surprise that the results for the $\gamma$ exponent are particularly bad.
 
       \begin{table}
         \centering
@@ -395,23 +394,23 @@
           \toprule
           $N$ & $\alpha_1$ & $\alpha_2$ & $\beta$ & $\gamma_1$ & $\gamma_2$ & $\delta$ \\
           \midrule
-          $8^2$ & $0.56 \pm 0.05$ & $0.4 \pm 0.1$ & $0.025 \pm 0.002$ & $1.6 \pm 0.3$ & $1.0 \pm 0.3$ & $66 \pm 7$\\
-          $16^2$ & $0.62 \pm 0.03$ & $0.48 \pm 0.06$ & $0.057 \pm 0.001$ & $1.4 \pm 0.2$ & $1.2 \pm 0.1$ & $26.4 \pm 0.7$\\
-          $32^2$ & $0.69 \pm 0.02$ & $0.39 \pm 0.04$ & $0.0771 \pm 0.0006$ & $1.8 \pm 0.1$ & $0.96 \pm 0.07$ & $21.8 \pm 0.5$\\
-          $64^2$ & $0.697 \pm 0.009$ & $0.37 \pm 0.02$ & $0.094 \pm 0.001$ & $1.7 \pm 0.1$ & $1.03 \pm 0.05$ & $16.8 \pm 0.1$\\
+          $8^2$ & $0.56 \pm 0.05$ & $0.4 \pm 0.1$ & $0.025 \pm 0.002$ & $1.24 \pm 0.06$ & $1 \pm 2$ & $66 \pm 7$\\
+          $16^2$ & $0.62 \pm 0.03$ & $0.48 \pm 0.06$ & $0.057 \pm 0.001$ & $1.5 \pm 0.1$ & $1.8 \pm 0.5$ & $26.4 \pm 0.7$\\
+          $32^2$ & $0.69 \pm 0.02$ & $0.39 \pm 0.04$ & $0.0771 \pm 0.0006$ & $1.7 \pm 0.1$ & $1 \pm 1$ & $21.8 \pm 0.5$\\
+          $64^2$ & $0.697 \pm 0.009$ & $0.37 \pm 0.02$ & $0.094 \pm 0.001$ & $2.5 \pm 0.1$ & $1.2 \pm 0.5$ & $16.8 \pm 0.1$\\
           $\infty^2$ & \multicolumn{2}{c}{$0$} & $0.125$ & \multicolumn{2}{c}{$1.75$} & $15$\\
           \midrule
-          $4^3$ & $0.48 \pm 0.04$ & $0.4 \pm 0.1$ & $0.0428 \pm 0.0008$ & $1.4 \pm 0.1$ & $0.8 \pm 0.2$ & $47 \pm 8$\\
-          $6^3$ & $0.80 \pm 0.04$ & $0.29 \pm 0.06$ & $0.100 \pm 0.003$ & $1.7 \pm 0.2$ & $0.8 \pm 0.1$ & $17.9 \pm 0.4$\\
-          $8^3$ & $1.02 \pm 0.05$ & $0.34 \pm 0.04$ & $0.1458 \pm 0.0009$ & $2.0 \pm 0.2$ & $0.76 \pm 0.06$ & $10.6 \pm 0.2$\\
-          $10^3$ & $0.96 \pm 0.05$ & $0.37 \pm 0.03$ & $0.1676 \pm 0.0008$ & $1.4 \pm 0.3$ & $0.95 \pm 0.06$ & $9.1 \pm 0.1$\\
-          $16^3$ & $0.79 \pm 0.02$ & $0.44 \pm 0.01$ & $0.201 \pm 0.002$ & $1.6 \pm 0.2$ & $0.89 \pm 0.03$ & $7.19 \pm 0.05$\\
+          $4^3$ & $0.48 \pm 0.04$ & $0.4 \pm 0.1$ & $0.0428 \pm 0.0008$ & $1.3 \pm 0.1$ & $1.1 \pm 0.5$ & $47 \pm 8$\\
+          $6^3$ & $0.80 \pm 0.04$ & $0.29 \pm 0.06$ & $0.100 \pm 0.003$ & $2.0 \pm 0.2$ & $1.3 \pm 0.5$ & $17.9 \pm 0.4$\\
+          $8^3$ & $1.02 \pm 0.05$ & $0.34 \pm 0.04$ & $0.1458 \pm 0.0009$ & $2.0 \pm 0.3$ & $1.6 \pm 0.3$ & $10.6 \pm 0.2$\\
+          $10^3$ & $0.96 \pm 0.05$ & $0.37 \pm 0.03$ & $0.1676 \pm 0.0008$ & $2.1 \pm 0.2$ & $0.7 \pm 0.2$ & $9.1 \pm 0.1$\\
+          $16^3$ & $0.79 \pm 0.02$ & $0.44 \pm 0.01$ & $0.201 \pm 0.002$ & $1.47 \pm 0.09$ & $1.8 \pm 0.2$ & $7.19 \pm 0.05$\\
           $\infty^3$ & \multicolumn{2}{c}{$0.110$} & $0.326$ & \multicolumn{2}{c}{$1.237$} & $4.790$\\
           \midrule
-          $4^4$ & $0.6 \pm 0.2$ & $0.39 \pm 0.09$ & $0.141 \pm 0.004$ & $2.0 \pm 0.5$ & $0.9 \pm 0.1$ & $11.8 \pm 0.4$\\
-          $6^4$ & $0.9 \pm 0.1$ & $0.31 \pm 0.03$ & $0.231 \pm 0.003$ & $2.3 \pm 0.3$ & $0.72 \pm 0.03$ & $6.35 \pm 0.05$\\
-          $8^4$ & $0.6 \pm 0.2$ & $0.32 \pm 0.03$ & $0.289 \pm 0.004$ & $2.1 \pm 0.9$ & $0.67 \pm 0.03$ & $5.20 \pm 0.03$\\
-          $10^4$ & $0.44 \pm 0.03$ & $0.17 \pm 0.02$ & $0.333 \pm 0.002$ & $1.3 \pm 0.3$ & $0.78 \pm 0.05$ & $4.60 \pm 0.02$\\
+          $4^4$ & $0.6 \pm 0.2$ & $0.39 \pm 0.09$ & $0.141 \pm 0.004$ & $0.7 \pm 0.5$ & $1.1 \pm 0.5$ & $11.8 \pm 0.4$\\
+          $6^4$ & $0.9 \pm 0.1$ & $0.31 \pm 0.03$ & $0.231 \pm 0.003$ & $1.9 \pm 0.7$ & $1.1 \pm 0.4$ & $6.35 \pm 0.05$\\
+          $8^4$ & $0.6 \pm 0.2$ & $0.32 \pm 0.03$ & $0.289 \pm 0.004$ & $0.2 \pm 0.2$ & $1.9 \pm 0.2$ & $5.20 \pm 0.03$\\
+          $10^4$ & $0.44 \pm 0.03$ & $0.17 \pm 0.02$ & $0.333 \pm 0.002$ & $0.9 \pm 0.3$ & $2.6 \pm 0.5$ & $4.60 \pm 0.02$\\
           $\infty^4$ & \multicolumn{2}{c}{$0$} & $0.5$ & \multicolumn{2}{c}{$1$} & $3$\\
           \bottomrule
         \end{tabular}
