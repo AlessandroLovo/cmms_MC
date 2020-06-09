@@ -21,15 +21,15 @@
 
     The hamiltonian of the system can then be written as
 
-    \begin{equation}
+    \begin{equation*}
       H = -\frac{1}{2} J \sum_i \sum_{j \, n.n. \, i} S_i S_j - B \sum_i S_i
-    \end{equation}
+    \end{equation*}
 
     where $J$ is the coupling constant between spins and $B$ is the external uniform magnetic field to which spins tend to align. However since the system will be in thermal equilibrium at temperature $T$ is is enough to consider the reduced energy
 
-    \begin{equation}
+    \begin{equation*}
       E = \frac{H}{k_BT} = -\frac{J}{2k_BT}  \sum_i \sum_{j \, n.n. \, i} S_i S_j - \frac{B}{k_BT} \sum_i S_i = -k\sum_i \sum_{j \, n.n. \, i} S_i S_j - h\sum_i S_i
-    \end{equation}
+    \end{equation*}
 
     Since the system has finite size one should deal with its surface: concerning this one could consider three possible boundary conditions:
     \begin{itemize}
@@ -160,15 +160,15 @@
       On the other hand the flipping probability of a spin next to an already fliped spin is $p_2 = e^{-\Delta E} = e^{-4k(z-2)}$.
       So, if one calls $N_{s}$ the number of spins not aligned with all the rest (henceforth 'seed' spins) and if $N_{s} \ll N$ one can write the following differential equation noting that if a seed spin is picked, it flips back with probability 1.
 
-      \begin{equation}
+      \begin{equation*}
         \frac{\partial N_{s}}{\partial t} = p_1\frac{N - N_{s}}{N}  + p_2 \frac{zN_s}{N}- \frac{N_{s}}{N} = p_1 - \frac{1}{N}(1 + p_1 - zp_2) N_s
-      \end{equation}
+      \end{equation*}
 
       Starting from $N_s(0) = 0$, the above equation has solution
 
-      \begin{equation}
+      \begin{equation*}
         N_{s}(t) = \frac{p_1N}{1 + p_1 - zp_2}\left(1 - e^{-\frac{1 + p_1 -zp_2}{N}t}  \right)
-      \end{equation}
+      \end{equation*}
 
       Now $1 + p_1 - zp_2$ can be smaller than 0 yielding an exponential increase of the number of seeds and thus the transition to the paramagnetic state. The condition for the transition $1 + p_1 - zp_2 < 0$ can be recasted as $ze^{8k} > e^{4zk} + 1$ and then solved graphically finding the lower threshold values of $k_l$ in tab \ref{tab:k_crit_th}.
       It is interesting to notice that in $D = 1$, $p_2 = 1$ and thus $1 + p_1 - zp_2 < 0 \, \forall k > 0$, meaning that the ferromagnetic state is always unstable, i.e. there is no phase transition, in agreement with statistical mechanics predictions. Moreover Onsanger's exact solution of the 2-dimensional Ising model predicts $k_{c}^{exact} = \frac{\ln(1 + \sqrt{2})}{4} \approx 0.22$. which is not very far from the value predicted by this very rough reasoning ($k_l = 0.17$).
@@ -279,23 +279,23 @@
       Another way of studying the phase transition is to fit the behavior of the thermodynamic properties of the system near the critical point finding some of its critical exponents.
       The simplest one is the exponent $\beta$, that controls how the magnetization goes to zero at the critical point:
 
-      \begin{equation}
+      \begin{equation*}
         \langle m \rangle (k;A,\beta,k_c) = \begin{cases}
           0 & k < k_c \\
           \pm A \left(\frac{1}{k_c} - \frac{1}{k} \right)^\beta & k > k_c
         \end{cases}
-      \end{equation}
+      \end{equation*}
 
       To simplify the fit one can take the absolute value of the magnetization, but it is important here to notice that the data used for the fit should be the absolute value of the average magnetization, and not the average of the absolute value of the magnetization (fig \ref{fig:D2_beta}).
 
       The way the magnetic susceptibility diverges at the critical point is instead controlled by the following:
 
-      \begin{equation}
+      \begin{equation*}
         \chi_m(k;A_1,A_2,\gamma_1,\gamma_2,k_c) = \begin{cases}
           A_1 \left|\frac{1}{k_c} - \frac{1}{k} \right|^{-\gamma_1} & k < k_c \\
           A_2 \left|\frac{1}{k_c} - \frac{1}{k} \right|^{-\gamma_2} & k > k_c
         \end{cases}
-      \end{equation}
+      \end{equation*}
 
       where in the thermodynamic limit the exponents $\gamma_1$ and $\gamma_2$ are equal.
       % For this fit (fig \ref{fig:D2_gamma}) it is better to use the differential definition of the magnetic susceptibility $\chi_m$, because there is no good way of estimating the error on $\chi_m'$. Furthermore $\chi_m'$ is computed as a variance on 18 'measures' of $|m|$: enough to qualitatively display the peaks in fig \ref{fig:D2_achi} but too few for a fit.
@@ -304,20 +304,20 @@
 
       For exponent $\alpha$ the fitting function is very similar, but data are much easier to deal with since $c_B$ can be computed as a discrete derivative propagating the error on $\langle a \rangle$ (fig \ref{fig:D2_alpha}):
 
-      \begin{equation}
+      \begin{equation*}
         c_B(k;A_1,A_2,\alpha_1,\alpha_2,k_c) = \begin{cases}
           A_1 \left|\frac{1}{k_c} - \frac{1}{k} \right|^{-\alpha_1} & k < k_c \\
           A_2 \left|\frac{1}{k_c} - \frac{1}{k} \right|^{-\alpha_2} & k > k_c
         \end{cases}
-      \end{equation}
+      \end{equation*}
 
       % Both for $\chi_m'$ and for $c_B$ the derivatives are computed as incremental ratios on consecutive simulations.
 
       The last critical exponent that can be estimated with quite ease is $\delta$, which controls how the magetization behaves at the critical point with respect to the external field $h$ (fig \ref{fig:D2_delta}).
 
-      \begin{equation}
+      \begin{equation*}
         \langle m \rangle (h;A,\delta) = Ah^{\frac[f]{1}{\delta}}
-      \end{equation}
+      \end{equation*}
 
       To estimate this exponent one needs to run more simulations fixing $k$ at the estimate of $k_c$ obtained in the fit for the $\beta$ exponent and with $h$ ranging from $0$ to $0.1$. Here the system is initialized in the ferromagnetic state aligned with $h$.
 
