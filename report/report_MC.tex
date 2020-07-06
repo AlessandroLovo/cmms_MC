@@ -12,11 +12,11 @@
 
 
 \section{Introduction}
-  The aim of this report is to use Montecarlo (MC) simulations to study the paramagnetic-ferromagnetic phase transition of an Ising model as a function of dimension $D$ and of the size of the system. Some ways of optimizing the simulations will also be discussed.
+  The aim of this report is to use Montecarlo (MC) simulations to study the paramagnetic-ferromagnetic phase transition of an Ising model as a function of the dimension $D$ and of the size of the system. Some ways of optimizing the simulations will also be discussed.
 
   \subsection{Setting up the model}
     An Ising model is a description of a magnetic system via a set of \emph{spins} interacting with each other.
-    There are many variaions on the theme of the Ising model, but here the focus is on the most commonly used, i.e. the one where each spin $S_i \in \{-1, +1\}$, spins are arranged in a $D$ dimensional simple cubic lattice and each spin interacts only with its nearest neighbors ($n.n.$).
+    There are many variations on the theme of the Ising model, but here the focus is on the most commonly used, i.e. the one where each spin $S_i \in \{-1, +1\}$, spins are arranged in a $D$ dimensional simple cubic lattice and each spin interacts only with its nearest neighbors ($n.n.$).
     The number of nearest neighbors per spin is defined as the coordination number $z = 2D$
 
     The hamiltonian of the system can then be written as
@@ -31,7 +31,7 @@
       E = \frac{H}{k_BT} = -\frac{J}{2k_BT}  \sum_i \sum_{j \, n.n. \, i} S_i S_j - \frac{B}{k_BT} \sum_i S_i = -k\sum_i \sum_{j \, n.n. \, i} S_i S_j - h\sum_i S_i
     \end{equation*}
 
-    Since the system has finite size one should deal with its surface: concerning this one could consider three possible boundary conditions:
+    Since the system has finite size one should deal with its surface: concerning this, one could consider three possible boundary conditions:
     \begin{itemize}
       \item \emph{free}, where the system is surrounded by a layer of spins with value fixed to $0$
       \item \emph{fixed}, where the system is surrounded by a layer of spins with value fixed to $+1$ or $-1$
@@ -42,7 +42,7 @@
     At this point, if the system has $N$ spins, one can define some useful quantities to be monitored during the simulations:
     \begin{itemize}
       \item magnetization per spin $m = \frac{1}{N} \sum_i S_i \in [-1, 1]$
-      \item degree of alignment per spin $a = \frac{1}{zN} \sum_i \sum_{j \, n.n. \, i} S_i S_j \in [-1, 1]$ that if $h = 0$ is equal to $-\frac{E}{kNz} = -\frac{2H}{J}$
+      \item degree of alignment per spin $a = \frac{1}{zN} \sum_i \sum_{j \, n.n. \, i} S_i S_j \in [-1, 1]$ that if $h = 0$ is equal to $-\frac{E}{kNz} = -\frac{2H}{JNz}$
       % \item density of domain walls $n_{DW} = \frac{N_{DW}}{N} = \frac{N - N_{sat}}{N}$ where $N_{sat}$ is the number of \emph{saturated} spins, i.e. spins that have the same value of all their nearest neighbors
     \end{itemize}
 
@@ -78,7 +78,7 @@
       \end{figure}
 
       In fig \ref{fig:pick_m} it is clear that cycling the spins instead of randomly picking them allows to reach the equilibrium state much faster. This can be explained by considering that when cycling the spins after $128^2 \approx 1.6\cdot10^4$ steps all spins had the opportunity to flip. On the other hand with the random picking it takes on average $128^2 \ln (128^2) \approx 1.6\cdot10^5$ steps before that hapens. This discrepancy increases if one considers the number of steps after which every spin had the opportunity to flip $M$ times.\\
-      In order to avoid correlation in the spins, a nice way of cycling is to randomly permute the sequence of indices of the spins $\{i\}_{i=1}^N$ and then pick them following the permuted sequence $\{i_j\}_{j=1}^N$.
+      In order to avoid correlation in the spins, a nice way of cycling is to randomly permute the sequence of indices of the spins $\{i\}_{i=1}^N$ at the beginning of the simulation and then pick them following the permuted sequence $\{i_j\}_{j=1}^N$.
 
     \subsection{How many spins to pick}
       First of all one should notice that picking together $n > 1$ spins is incompatible with the cycling technique as the $n$-uples of spins will periodically repeat somehow partitioning the system in groups. And actually in this case the system does not evolve at all (fig \ref{fig:fin_nb}).
@@ -158,7 +158,8 @@
       Since the idea is to simulate at different values of $k$ and hopefully see a phase transition it is useful to make some rough estimations in order to look in the correct range of $k$s.\\
       If one considers the perfectly ferromagnetic configuration in which all the spins are aligned the probability of one of them flipping is $p_1 = e^{-\Delta E} = e^{-4kz}$.
       On the other hand the flipping probability of a spin next to an already fliped spin is $p_2 = e^{-\Delta E} = e^{-4k(z-2)}$.
-      So, if one calls $N_{s}$ the number of spins not aligned with all the rest (henceforth 'seed' spins) and if $N_{s} \ll N$ one can write the following differential equation noting that if a seed spin is picked, it flips back with probability 1.
+      So, if one calls $N_{s}$ the number of spins not aligned with all the rest (henceforth 'seed' spins) and if $N_{s} \ll N$ one can write the following differential equation\footnote{Actually during the final revision I realized that a more accurate model would have the first term of the right hand side be $p_1\frac{N - (z+1)N_s}{N}$. Unfortunately with this correction the model predicts a phase transition only in $D = 1$, which is a bit awkward. However the results of the simulations agree with the (wrong) model in the report.}
+      noting that if a seed spin is picked, it flips back with probability 1.
 
       \begin{equation*}
         \frac{\partial N_{s}}{\partial t} = p_1\frac{N - N_{s}}{N}  + p_2 \frac{zN_s}{N}- \frac{N_{s}}{N} = p_1 - \frac{1}{N}(1 + p_1 - zp_2) N_s
@@ -172,7 +173,7 @@
 
       Now $1 + p_1 - zp_2$ can be smaller than 0 yielding an exponential increase of the number of seeds and thus the transition to the paramagnetic state. The condition for the transition $1 + p_1 - zp_2 < 0$ can be recasted as $ze^{8k} > e^{4zk} + 1$ and then solved graphically finding the lower threshold values of $k_l$ in tab \ref{tab:k_crit_th}.
       It is interesting to notice that in $D = 1$, $p_2 = 1$ and thus $1 + p_1 - zp_2 < 0 \, \forall k > 0$, meaning that the ferromagnetic state is always unstable, i.e. there is no phase transition, in agreement with statistical mechanics predictions. Moreover Onsanger's exact solution of the 2-dimensional Ising model predicts $k_{c}^{exact} = \frac{\ln(1 + \sqrt{2})}{4} \approx 0.22$. which is not very far from the value predicted by this very rough reasoning ($k_l = 0.17$).
-      On the other hand if $1 + p_1 - zp_2 > 0$, $N_s(t) \xrightarrow[t \to \infty]{} \frac{p_1N}{1 + p_1 - zp_2} \approx \frac{p_1N}{1 - zp_2}$.
+      On the other hand if $1 + p_1 - zp_2 > 0$, $N_s(t) \xrightarrow[t \to \infty]{} \frac{p_1N}{1 + p_1 - zp_2}$.
       If one sets a threshold $\frac{N_s(\infty)}{N} < 0.1\%$ one can graphically find the upper threshold values $k_u$ in tab \ref{tab:k_crit_th}.
 
       \begin{table}[H]
